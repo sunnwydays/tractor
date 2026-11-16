@@ -188,6 +188,29 @@ def test_nobody_declares_redeals_with_a_new_shuffle():
     assert st2.dealt >= 1
 
 
+def test_no_face_redeal_only_deals_hands_with_a_jqk():
+    from engine.state import _has_clothesless_hand
+
+    cfg = GameConfig.for_players(7)
+    for seed in range(20):
+        st = new_round(cfg, seed)
+        assert not _has_clothesless_hand(st.deck, cfg, st.first_seat)
+
+
+def test_clothesless_hand_detection_ignores_jokers_and_aces():
+    from engine.state import _has_clothesless_hand
+
+    cfg = GameConfig.for_players(7)
+    n, hs = cfg.num_players, cfg.hand_size
+    # Seat 0 gets only aces (rank 14 -> index 12) and jokers; everyone else gets a king (index 11).
+    deck = [11] * (n * hs)
+    for i in range(0, n * hs, n):
+        deck[i] = 12 if i % 2 else SMALL_JOKER
+    assert _has_clothesless_hand(deck, cfg, 0)
+    deck[0] = 11
+    assert not _has_clothesless_hand(deck, cfg, 0)
+
+
 def test_table_that_never_declares_gives_up():
     st = new_round(CFG, 5)
     with pytest.raises(RuntimeError):

@@ -210,6 +210,17 @@ def _declare_legal(st: RoundState, p: int, card: int, count: int) -> bool:
     return _beats_declaration(st.declaration, p, card, count)
 
 
+def _has_clothesless_hand(deck, config: GameConfig, first_seat: int) -> bool:
+    """True if some player's dealt hand (kitty excluded) has no J, Q or K. Jokers and A don't count."""
+    n = config.num_players
+    clothed = [False] * n
+    for i in range(n * config.hand_size):
+        c = deck[i]
+        if c < SMALL_JOKER and c % 13 + 2 in (11, 12, 13):
+            clothed[(first_seat + i) % n] = True
+    return not all(clothed)
+
+
 def _fresh(config, seed, redeals, levels, eligible, first_seat) -> RoundState:
     """A newly shuffled deck, dealt up to the first decision."""
     if redeals > MAX_REDEALS:
@@ -217,6 +228,8 @@ def _fresh(config, seed, redeals, levels, eligible, first_seat) -> RoundState:
     n = config.num_players
     deck = build_deck(config.num_decks)
     random.Random(f"{seed}/{redeals}").shuffle(deck)
+    if config.no_face_redeal and _has_clothesless_hand(deck, config, first_seat):
+        return _fresh(config, seed, redeals + 1, levels, eligible, first_seat)
     st = RoundState(
         config=config, seed=seed, redeals=redeals, levels=levels, eligible=eligible,
         first_seat=first_seat, phase=Phase.DEAL, to_act=first_seat, deck=tuple(deck),

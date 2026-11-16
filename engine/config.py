@@ -80,6 +80,9 @@ class GameConfig:
 
     # Declaring
     no_declaration: str = "redeal"  # [?]
+    # Redeal the whole table if any player's dealt hand has no J, Q or K
+    # (jokers and A don't count).
+    no_face_redeal: bool = True
 
     # Friends
     allow_solo: bool = True

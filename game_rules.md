@@ -48,6 +48,8 @@ Identical cards played in the same trick: first one played wins.
   - You **can reinforce** your own single into a pair (or pair into triple) to protect it.
 - **Double joker** (pair of jokers) overrides anything and makes it **无主** (no trump suit). The landlord's level is still the trump rank.
 - **[?]** Nobody declares: never happened to us. Default: redeal.
+- **No "clothes" redeal** (`no_face_redeal`): a player whose dealt hand has no face cards (J, Q, K) may call for a redeal (whole table).
+  - Jokers and A are not face cards. The check is on the dealt hand only, before the kitty.
 
 ## Kitty
 
@@ -143,5 +145,6 @@ Level changes — Shengji tables, by deck count (`score_table`). Step = 20 × de
 - Deck count threshold by player count.
 - Kitty multiplier for triples/tractors.
 - Solo scoring details.
+- No-clothes redeal details (jokers, scope).
 - Rules at K, A; details of J.
 - Anything else from our games: _______
